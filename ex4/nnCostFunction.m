@@ -95,18 +95,19 @@ J = J + Reg;
 % Theta2 10 x 26
 
 betha_3 = A3 - y; % 5000 x 10
-betha_2 = betha_3 * Theta2 .* sigmoidGradient([ones(m, 1) Z2]); % 5000 x 26
+% betha_2 = betha_3 * Theta2 .* sigmoidGradient([ones(m, 1) Z2]); % 5000 x 26
+betha_2 = betha_3 * Theta2 .* (A2 .* (1 - A2)); % 5000 x 26
 
 delta_1 = betha_2(:,2:end)' * A1; % 25 x 401
 delta_2 = betha_3' * A2; % 10 x 26
 
 % -------------------------------------------------------------
 
-Theta1BackReg = [ones(size(Theta1Reg, 1), 1) Theta1Reg];
-Theta2BackReg = [ones(size(Theta2Reg, 1), 1) Theta2Reg];
+Theta1BackReg = [zeros(size(Theta1Reg, 1), 1) Theta1Reg];
+Theta2BackReg = [zeros(size(Theta2Reg, 1), 1) Theta2Reg];
 
-Theta1_grad = delta_1 / m + lambda * Theta1BackReg;
-Theta2_grad = delta_2 / m + lambda * Theta2BackReg;
+Theta1_grad = delta_1 / m + lambda / m * Theta1BackReg;
+Theta2_grad = delta_2 / m + lambda / m * Theta2BackReg;
 
 % =========================================================================
 
